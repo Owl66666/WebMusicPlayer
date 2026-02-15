@@ -1,53 +1,30 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Glass BGM Player</title>
+<title>Transparent Player</title>
 <style>
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    background: transparent;
     height: 100vh;
-    background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 30px;
-    width: 320px;
-    text-align: center;
-    color: white;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-}
-
-.title {
-    margin-bottom: 15px;
-    font-size: 18px;
-    letter-spacing: 1px;
-    opacity: 0.9;
 }
 
 audio {
-    width: 100%;
+    width: 90%;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <div class="title">Background Music</div>
-    <audio controls loop>
-        <source src="BGM.m4a" type="audio/mp4">
-    </audio>
-</div>
+<audio controls loop>
+    <source src="BGM.m4a" type="audio/mp4">
+</audio>
 
 </body>
 </html>
