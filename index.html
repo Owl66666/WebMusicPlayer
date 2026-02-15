@@ -2,83 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Glass BGM Player</title>
+<title>Dynamic Average Color Player</title>
 
 <style>
 body {
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #1a1a1a, #2e2e2e);
+    background: #121212;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    box-sizing: border-box;
+    transition: background 0.8s ease;
 }
 
 /* 卡片 */
 .card {
+    width: 100%;
+    max-width: 600px;
+    background: #181818;
+    border-radius: 12px;
+    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 20px;
-
-    width: 100%;
-    max-width: 520px;
-
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    border-radius: 24px;
-    padding: 25px;
-
-    color: white;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    gap: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
 
 /* 封面 */
 .cover {
-    width: 100px;
-    height: 100px;
-    border-radius: 18px;
+    width: 90px;
+    height: 90px;
+    border-radius: 8px;
     object-fit: cover;
     flex-shrink: 0;
 }
 
-/* 右侧 */
+/* 信息 */
 .info {
     flex: 1;
     min-width: 0;
 }
 
 .title {
-    font-size: 16px;
-    margin-bottom: 6px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .artist {
+    color: #b3b3b3;
     font-size: 13px;
-    opacity: 0.7;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 audio {
     width: 100%;
-}
-
-/* 小屏幕优化 */
-@media (max-width: 480px) {
-    .card {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .cover {
-        width: 90px;
-        height: 90px;
-    }
+    filter: invert(1);
 }
 </style>
 </head>
@@ -86,7 +68,7 @@ audio {
 <body>
 
 <div class="card">
-    <img src="src/hqdefault.JPG" class="cover">
+    <img src="src/hqdefault.jpg" class="cover" id="cover">
 
     <div class="info">
         <div class="title">さくらのうた（木管五重奏）</div>
@@ -97,6 +79,47 @@ audio {
         </audio>
     </div>
 </div>
+
+<script>
+const img = document.getElementById('cover');
+
+img.onload = function() {
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const size = 100; // 降低分辨率提高性能
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.drawImage(img, 0, 0, size, size);
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+
+    let r = 0, g = 0, b = 0;
+    let count = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+        count++;
+    }
+
+    r = Math.floor(r / count);
+    g = Math.floor(g / count);
+    b = Math.floor(b / count);
+
+    // 压暗 40% 避免太亮
+    r = Math.floor(r * 0.6);
+    g = Math.floor(g * 0.6);
+    b = Math.floor(b * 0.6);
+
+    document.body.style.background =
+        `linear-gradient(135deg, rgb(${r},${g},${b}), #121212)`;
+};
+</script>
 
 </body>
 </html>
