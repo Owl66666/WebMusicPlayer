@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Style Player</title>
+    <style>
+        :root {
+            --spotify-green: #1DB954;
+            --bg-black: #121212;
+            --card-gray: #181818;
+            --text-white: #FFFFFF;
+            --text-gray: #B3B3B3;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent; /* 方便嵌入 Notion */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 播放器主卡片 */
+        .player-container {
+            background-color: var(--card-gray);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: background-color 0.3s;
+        }
+
+        /* 封面图 */
+        .cover-art {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            object-fit: cover;
+        }
+
+        /* 文字信息 */
+        .info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .track-name {
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .artist-name {
+            color: var(--text-gray);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* 播放按钮 */
+        .play-btn {
+            background-color: var(--spotify-green);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            background-color: #1ed760;
+        }
+
+        .play-btn svg {
+            fill: black;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 进度条简易版 */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #4f4f4f;
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--text-white);
+            width: 0%;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="player-container">
+    <img id="cover" class="cover-art" src="covers/cover1.jpg" alt="Cover">
+    
+    <div class="info">
+        <p id="title" class="track-name">Loading Song...</p>
+        <p id="artist" class="artist-name">Artist Name</p>
+        <div class="progress-container">
+            <div id="progress" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <button id="playBtn" class="play-btn">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M7 6v12l10-6z"/></svg>
+    </button>
+</div>
+
+<audio id="audio" src="music/song1.mp3"></audio>
+
+<script>
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const progress = document.getElementById('progress');
+    const title = document.getElementById('title');
+    const artist = document.getElementById('artist');
+
+    // 在这里配置你的歌曲信息
+    const songData = {
+        title: "你的歌曲名",
+        artist: "你的艺术家",
+        cover: "covers/cover1.jpg"
+    };
+
+    // 初始化界面
+    title.innerText = songData.title;
+    artist.innerText = songData.artist;
+
+    playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // 暂停图标
+        } else {
+            audio.pause();
+            playIcon.innerHTML = '<path d="M7 6v12l10-6z"/>'; // 播放图标
+        }
+    });
+
+    // 更新进度条
+    audio.addEventListener('timeupdate', () => {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progress.style.width = percent + '%';
+    });
+</script>
+
+</body>
+</html>
