@@ -10,20 +10,18 @@ html, body {
     margin: 0;
     padding: 0;
     background: transparent;
-    display: inline-block;   /* 关键 */
-    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif;
 }
 
-/* 卡片高度固定接近 Spotify 比例 */
+/* 卡片 */
 .card {
     width: 100%;
-    height: 152px;           /* 精准高度 */
     padding: 18px 20px;
     display: flex;
     align-items: center;
     gap: 18px;
     box-sizing: border-box;
-    transition: background 0.6s ease, box-shadow 0.6s ease;
+    transition: background 0.6s ease;
 }
 
 /* 封面 */
@@ -56,7 +54,6 @@ html, body {
 
 audio {
     width: 100%;
-    height: 32px;
     filter: invert(1);
 }
 </style>
