@@ -49,7 +49,7 @@ audio {
 }
 audio:hover { opacity: 1; }
 
-.nav-buttons {
+/* .nav-buttons {
     display: flex; gap: 16px; margin-top: 10px;
 }
 
@@ -64,7 +64,7 @@ audio:hover { opacity: 1; }
 .nav-buttons button:hover {
     background: #fff; color: #000;
     transform: scale(1.1); border-color: #fff;
-}
+} */
 
 /* --- 响应式断点（优化版） --- */
 @media (max-height: 180px) {
@@ -115,5 +115,62 @@ audio:hover { opacity: 1; }
     .nav-buttons {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* 通用按钮基础样式 */
+.icon-btn {
+    /* 缩小按钮尺寸：从 48px 降到 32px-36px 左右 */
+    width: 34px; 
+    height: 34px;
+    
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain; /* 确保图标完整缩放 */
+    cursor: pointer;
+    
+    /* 增加过渡时间，让缩小/放大更优雅 */
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+    padding: 0;
+    outline: none;
+    
+    /* 默认轻微降暗，悬停时点亮，增加质感 */
+    opacity: 0.8; 
+}
+
+/* 悬停状态：点亮并微放 */
+.icon-btn:hover {
+    opacity: 1;
+    transform: scale(1.15); /* 稍微明显的放大反馈 */
+}
+
+/* 按钮特定图标路径 */
+#prevBtn { background-image: url('./icon/b_0.svg'); }
+#prevBtn:hover { background-image: url('./icon/b_1.svg'); }
+
+#nextBtn { background-image: url('./icon/f_0.svg'); }
+#nextBtn:hover { background-image: url('./icon/f_1.svg'); }
+
+/* 状态 1 & 2：横向布局时的间距 */
+@media (max-height: 400px) {
+    .nav-buttons {
+        display: flex;
+        gap: 35px; /* 增加横向模式下的按钮间距 */
+        margin-left: 10px;
+    }
+}
+
+/* 状态 3：全屏模式下的布局 */
+@media (min-height: 401px) {
+    .nav-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* 显著增加全屏模式下的间距，营造呼吸感 */
+        gap: 60px; 
+        margin-top: 30px;
     }
 }
