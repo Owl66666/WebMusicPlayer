@@ -10,16 +10,27 @@ const card = document.getElementById('card');
 
 async function fetchPlaylist() {
     try {
-        const response = await fetch(`${API_BASE}/api/playlist`);
+        // 1. 获取当前页面 URL 中的 tag 参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const tag = urlParams.get('tag');
+        
+        // 2. 将 tag 拼接到 API 请求中
+        let apiUrl = `${API_BASE}/api/playlist`;
+        if (tag) {
+            apiUrl += `?tag=${encodeURIComponent(tag)}`;
+        }
+
+        const response = await fetch(apiUrl);
         playlist = await response.json();
+        
         if (playlist.length > 0) {
-            loadSong(0, false); // 初始加载不自动播放
+            loadSong(0, false);
         } else {
-            trackTitle.innerText = "Playlist Empty";
+            trackTitle.innerText = tag ? `标签 [${tag}] 下没有歌曲` : "歌单为空";
         }
     } catch (err) {
         console.error("API Error:", err);
-        trackTitle.innerText = "Connection Error";
+        trackTitle.innerText = "接続エラー";
     }
 }
 
