@@ -1,6 +1,4 @@
-// 配置你的 Worker 域名
 const API_BASE = "https://music-api.zchong517.workers.dev"; 
-
 let playlist = [];
 let currentIndex = 0;
 
@@ -10,60 +8,62 @@ const coverImg = document.getElementById('cover');
 const audioPlayer = document.getElementById('audioPlayer');
 const card = document.getElementById('card');
 
-// 1. 初始化：获取歌单
 async function fetchPlaylist() {
     try {
         const response = await fetch(`${API_BASE}/api/playlist`);
         playlist = await response.json();
-        
         if (playlist.length > 0) {
-            loadSong(0);
+            loadSong(0, false); // 初始加载不自动播放
         } else {
-            trackTitle.innerText = "歌单为空";
+            trackTitle.innerText = "Playlist Empty";
         }
     } catch (err) {
         console.error("API Error:", err);
-        trackTitle.innerText = "接続エラー";
+        trackTitle.innerText = "Connection Error";
     }
 }
 
-// 2. 加载选中的歌曲
-function loadSong(index) {
+function loadSong(index, shouldPlay = true) {
     const song = playlist[index];
     currentIndex = index;
 
-    // 注入文本
-    trackTitle.innerText = song.title;
-    trackArtist.innerText = song.artist;
+    // 视觉反馈：切换时轻微淡出
+    [trackTitle, trackArtist, coverImg].forEach(el => el.style.opacity = '0.3');
 
-    // 注入资源 (走 Worker 的 /file/ 代理)
-    coverImg.src = `${API_BASE}/file/${song.r2_cover_key}`;
-    audioPlayer.src = `${API_BASE}/file/${song.r2_music_key}`;
+    setTimeout(() => {
+        trackTitle.innerText = song.title;
+        trackArtist.innerText = song.artist;
+        coverImg.src = `${API_BASE}/file/${song.r2_cover_key}`;
+        audioPlayer.src = `${API_BASE}/file/${song.r2_music_key}`;
 
-    // 背景颜色注入 (优先使用 D1 中 Python 预存的颜色)
-    if (song.theme_color) {
-        card.style.background = `linear-gradient(135deg, ${song.theme_color} 0%, #121212 100%)`;
-    }
+        if (song.theme_color) {
+            // 使用 CSS 变量或直接修改，添加一点透明度使背景更深邃
+            card.style.background = `linear-gradient(135deg, ${song.theme_color}bb 0%, #121212 100%)`;
+        }
 
-    // 加载并播放 (受浏览器策略限制，可能需要用户点一下才能响)
-    audioPlayer.load();
+        audioPlayer.load();
+        
+        // 恢复不透明度
+        [trackTitle, trackArtist, coverImg].forEach(el => el.style.opacity = '1');
+
+        if (shouldPlay) {
+            audioPlayer.play().catch(e => console.log("Auto-play blocked by browser"));
+        }
+    }, 200);
 }
 
-// 3. 按钮交互逻辑
 document.getElementById('nextBtn').addEventListener('click', () => {
-    let nextIndex = (currentIndex + 1) % playlist.length;
-    loadSong(nextIndex);
+    currentIndex = (currentIndex + 1) % playlist.length;
+    loadSong(currentIndex, true);
 });
 
 document.getElementById('prevBtn').addEventListener('click', () => {
-    let prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-    loadSong(prevIndex);
+    currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+    loadSong(currentIndex, true);
 });
 
-// 4. 自动播放下一首
 audioPlayer.addEventListener('ended', () => {
     document.getElementById('nextBtn').click();
 });
 
-// 执行初始化
 fetchPlaylist();
