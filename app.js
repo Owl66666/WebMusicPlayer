@@ -1,5 +1,5 @@
 // 配置你的 Worker 域名
-const API_BASE = "https://music-api.zchong517.workers.dev/"; 
+const API_BASE = "https://music-api.zchong517.workers.dev"; 
 
 let playlist = [];
 let currentIndex = 0;
