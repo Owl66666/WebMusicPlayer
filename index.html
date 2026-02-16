@@ -1,200 +1,32 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>さくらのうた - Player</title>
-
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            background: #121212;
-            font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Segoe UI", sans-serif;
-        }
-
-        .card {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            box-sizing: border-box;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.8s ease;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .cover {
-            border-radius: 6px;
-            object-fit: cover;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .info {
-            flex: 1; /* 关键：占据剩余所有宽度 */
-            min-width: 0;
-            display: flex;
-            transition: all 0.5s ease;
-        }
-
-        .text-content {
-            min-width: 0;
-            flex-shrink: 1;
-        }
-
-        .title {
-            color: white;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .artist {
-            color: rgba(255,255,255,0.7);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        audio {
-            width: 100%; /* 始终撑满父容器 */
-            height: 32px;
-            filter: invert(1) hue-rotate(180deg) brightness(1.4);
-        }
-
-        /* ============================================================
-           状态 1：极简模式 (高度 < 150px) - 强制全宽
-        ============================================================ */
-        @media (max-height: 150px) {
-            .card {
-                flex-direction: row;
-                padding: 10px 20px;
-                gap: 15px;
-            }
-            .cover {
-                width: 50px;
-                height: 50px;
-            }
-            .info {
-                flex-direction: row;
-                align-items: center;
-                gap: 20px; /* 标题和播放器之间的间距 */
-            }
-            .text-content {
-                width: 180px; /* 给文字区域一个固定或最小宽度，防止被播放器挤消失 */
-                flex-shrink: 0;
-            }
-            .title { font-size: 14px; margin: 0; }
-            .artist { display: none; }
-            audio {
-                flex: 1; /* 播放器占据剩下的所有宽度 */
-            }
-        }
-
-        /* ============================================================
-           状态 2：标准模式 (151px - 340px)
-        ============================================================ */
-        @media (min-height: 151px) and (max-height: 340px) {
-            .card {
-                flex-direction: row;
-                padding: 20px 30px;
-            }
-            .cover {
-                width: 120px;
-                height: 120px;
-            }
-            .info {
-                flex-direction: column;
-                justify-content: center;
-            }
-            .title { font-size: 18px; margin-bottom: 4px; }
-            .artist { font-size: 14px; display: block; margin-bottom: 10px; }
-        }
-
-        /* ============================================================
-           状态 3：大卡片模式 (> 340px)
-        ============================================================ */
-        @media (min-height: 341px) {
-            .card {
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-                padding: 40px;
-            }
-            .cover {
-                width: 280px;
-                height: 280px;
-                margin-bottom: 20px;
-            }
-            .info {
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-                max-width: 450px;
-            }
-            .title { font-size: 24px; margin-bottom: 8px; }
-            .artist { font-size: 16px; margin-bottom: 24px; }
-        }
-    </style>
+    <title>DAY7 Music Player</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="card" id="card">
-    <img src="src/hqdefault.JPG" class="cover" id="cover" crossorigin="anonymous">
+    <img src="" class="cover" id="cover" crossorigin="anonymous">
 
     <div class="info">
         <div class="text-content">
-            <div class="title">さくらのうた（木管五重奏）</div>
-            <div class="artist">福田洋介⧸森の五重奏团</div>
+            <h1 class="title" id="trackTitle">読み込み中...</h1>
+            <p class="artist" id="trackArtist">Loading Artist...</p>
         </div>
 
-        <audio controls loop>
-            <source src="src/BGM.m4a" type="audio/mp4">
-        </audio>
+        <div class="player-controls">
+            <audio id="audioPlayer" controls loop></audio>
+            <div class="nav-buttons">
+                <button id="prevBtn" title="Previous">⏮</button>
+                <button id="nextBtn" title="Next">⏭</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<script>
-    const img = document.getElementById('cover');
-    const card = document.getElementById('card');
-
-    function updateTheme() {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const size = 10; 
-        canvas.width = size;
-        canvas.height = size;
-
-        ctx.drawImage(img, 0, 0, size, size);
-
-        try {
-            const data = ctx.getImageData(0, 0, size, size).data;
-            let r = 0, g = 0, b = 0;
-            for (let i = 0; i < data.length; i += 4) {
-                r += data[i]; g += data[i+1]; b += data[i+2];
-            }
-            const count = data.length / 4;
-            const darken = 0.45;
-            const finalR = Math.floor((r / count) * darken);
-            const finalG = Math.floor((g / count) * darken);
-            const finalB = Math.floor((b / count) * darken);
-
-            card.style.background = `linear-gradient(135deg, rgb(${finalR},${finalG},${finalB}) 0%, #121212 100%)`;
-        } catch (e) {
-            card.style.background = "#181818";
-        }
-    }
-
-    if (img.complete) updateTheme(); else img.onload = updateTheme;
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
