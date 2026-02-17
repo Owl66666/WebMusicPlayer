@@ -38,6 +38,12 @@ function loadSong(index, shouldPlay = true) {
     const song = playlist[index];
     currentIndex = index;
 
+    // --- 调试代码开始 ---
+    console.group(`🎵 正在加载第 ${index + 1} 首歌`);
+    console.log(`标题: %c${song.title}`, "color: #1db954; font-weight: bold");
+    console.log(`原始颜色数据 (D1): %c${song.theme_color || '无颜色数据'}`, `color: ${song.theme_color || '#fff'}`);
+    // --- 调试代码结束 ---
+
     // 视觉反馈：切换时轻微淡出
     [trackTitle, trackArtist, coverImg].forEach(el => el.style.opacity = '0.3');
 
@@ -47,18 +53,24 @@ function loadSong(index, shouldPlay = true) {
         coverImg.src = `${API_BASE}/file/${song.r2_cover_key}`;
         audioPlayer.src = `${API_BASE}/file/${song.r2_music_key}`;
 
+        // 背景颜色处理
         if (song.theme_color) {
-            // 使用 CSS 变量或直接修改，添加一点透明度使背景更深邃
-            card.style.background = `linear-gradient(135deg, ${song.theme_color}bb 0%, #121212 100%)`;
+            const finalBg = `linear-gradient(135deg, ${song.theme_color}bb 0%, #121212 100%)`;
+            card.style.background = finalBg;
+            // 打印最终应用的背景样式
+            console.log(`最终背景样式: ${finalBg}`);
+        } else {
+            console.warn("⚠️ 此歌曲未设置 theme_color，使用 CSS 默认背景");
         }
 
         audioPlayer.load();
         
-        // 恢复不透明度
         [trackTitle, trackArtist, coverImg].forEach(el => el.style.opacity = '1');
+        
+        console.groupEnd(); // 结束控制台分组
 
         if (shouldPlay) {
-            audioPlayer.play().catch(e => console.log("Auto-play blocked by browser"));
+            audioPlayer.play().catch(e => console.log("播放被浏览器拦截"));
         }
     }, 200);
 }
