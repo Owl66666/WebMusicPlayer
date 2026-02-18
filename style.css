@@ -1,176 +1,173 @@
 /* 基础重置 */
 html, body {
-    margin: 0; padding: 0; height: 100vh; width: 100%;
-    overflow: hidden; background: #000; /* Notion 环境下背景设为黑或透明 */
+    margin: 0; 
+    padding: 0; 
+    height: 100vh; 
+    width: 100%;
+    overflow: hidden; 
+    /* 核心：匹配 Notion 背景色，防止圆角边缘出现色差 */
+    background-color: #191919; 
     font-family: 'Inter', -apple-system, system-ui, sans-serif;
 }
 
 .card {
-    width: 100%; height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    box-sizing: border-box; padding: 24px; gap: 40px;
-    /* 初始渐变稍微柔和一点 */
-    background: linear-gradient(135deg, #282828 0%, #121212 100%);
+    width: 100%; 
+    height: 100vh;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    box-sizing: border-box; 
+    padding: 24px; 
+    gap: 40px;
+    
+    /* --- 核心圆角设计 --- */
+    border-radius: 28px; 
+    overflow: hidden;
+    
+    /* 极细微的边框，模拟玻璃质感 */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    
+    /* 初始渐变：终点颜色设为 Notion 的 #191919 以实现无缝融合 */
+    background: linear-gradient(135deg, #282828 0%, #191919 100%);
+    
+    /* 丝滑的颜色切换动画 */
     transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* 阴影设计：让组件在 Notion 页面上有浮起感 */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
 .cover {
-    border-radius: 12px; object-fit: cover;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+    /* 封面圆角稍小，形成嵌套美感 */
+    border-radius: 18px; 
+    object-fit: cover;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.6);
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0; 
 }
 
-/* 鼠标悬停封面轻微放大 */
+/* 鼠标悬停封面：轻微放大并增加阴影 */
 .card:hover .cover {
-    transform: scale(1.02);
+    transform: scale(1.03);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
 }
 
 .info {
-    flex: 1; min-width: 0; max-width: 450px;
-    display: flex; flex-direction: column;
+    flex: 1; 
+    min-width: 0; 
+    max-width: 450px;
+    display: flex; 
+    flex-direction: column;
 }
 
 .title {
-    color: #fff; margin: 0; font-size: 28px; font-weight: 800;
-    letter-spacing: -0.5px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    color: #ffffff; 
+    margin: 0; 
+    font-size: 30px; 
+    font-weight: 800;
+    letter-spacing: -0.8px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    /* 微弱文字阴影，增强可读性 */
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .artist {
-    color: rgba(255,255,255,0.5); margin: 8px 0 24px 0; 
-    font-size: 18px; font-weight: 500;
+    color: rgba(255, 255, 255, 0.5); 
+    margin: 10px 0 28px 0; 
+    font-size: 18px; 
+    font-weight: 500;
+    letter-spacing: 0.1px;
 }
 
-/* 隐藏原生播放器的背景，使其更融入 */
+/* 隐藏原生播放器背景，利用滤镜适配深色模式 */
 audio {
-    width: 100%; height: 40px;
-    filter: invert(1) hue-rotate(180deg) brightness(1.2);
-    opacity: 0.8; transition: opacity 0.3s;
-}
-audio:hover { opacity: 1; }
-
-/* .nav-buttons {
-    display: flex; gap: 16px; margin-top: 10px;
+    width: 100%; 
+    height: 36px;
+    /* 强制反色并提高亮度，使进度条变白 */
+    filter: invert(1) hue-rotate(180deg) brightness(1.4) contrast(0.9);
+    opacity: 0.75; 
+    transition: all 0.3s ease;
 }
 
-.nav-buttons button {
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff; border-radius: 50%; width: 45px; height: 45px;
-    cursor: pointer; transition: all 0.3s ease; 
-    font-size: 16px; display: flex; align-items: center; justify-content: center;
+audio:hover { 
+    opacity: 1; 
+    transform: translateY(-1px);
 }
 
-.nav-buttons button:hover {
-    background: #fff; color: #000;
-    transform: scale(1.1); border-color: #fff;
-} */
-
-/* --- 响应式断点（优化版） --- */
-@media (max-height: 180px) {
-    .card { flex-direction: row; padding: 10px 24px; gap: 20px; }
-    .cover { width: 80px; height: 80px; }
-    .title { font-size: 20px; }
-    .artist, .nav-buttons { display: none; }
-}
-
-@media (min-height: 181px) and (max-height: 400px) {
-    .card { flex-direction: row; padding: 20px 40px; }
-    .cover { width: 200px; height: 200px; }
-    .title { font-size: 24px; }
-}
-
-@media (min-height: 401px) {
-    .card { 
-        flex-direction: column; 
-        text-align: center; 
-        padding: 40px 20px; 
-    }
-    .cover { 
-        width: 300px; 
-        height: 300px; 
-        margin-bottom: 25px; 
-        flex-shrink: 0; /* 防止图片在空间不足时变形 */
-    }
-    .info { 
-        display: flex;
-        flex-direction: column;
-        align-items: center; 
-        width: 100%; 
-        /* 核心修改：确保 info 容器在纵向模式下有足够的宽度撑开进度条 */
-        min-width: 320px; 
-        max-width: 450px; 
-    }
-    .text-content {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-    /* 强力拉伸 audio */
-    audio { 
-        display: block;
-        width: 100% !important; /* 强制填满父级 .info */
-        height: 40px;
-        margin: 0 auto 20px auto;
-    }
-    .nav-buttons {
-        width: 100%;
-        justify-content: center;
-    }
+/* 导航按钮容器 */
+.nav-buttons {
+    display: flex;
+    align-items: center;
 }
 
 /* 通用按钮基础样式 */
 .icon-btn {
-    /* 缩小按钮尺寸：从 48px 降到 32px-36px 左右 */
-    width: 34px; 
-    height: 34px;
-    
+    width: 36px; 
+    height: 36px;
     border: none;
     background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: contain; /* 确保图标完整缩放 */
+    background-size: contain;
     cursor: pointer;
-    
-    /* 增加过渡时间，让缩小/放大更优雅 */
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 0;
     outline: none;
-    
-    /* 默认轻微降暗，悬停时点亮，增加质感 */
-    opacity: 0.8; 
+    opacity: 0.6; 
 }
 
-/* 悬停状态：点亮并微放 */
 .icon-btn:hover {
     opacity: 1;
-    transform: scale(1.15); /* 稍微明显的放大反馈 */
+    transform: scale(1.15);
 }
 
-/* 按钮特定图标路径 */
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+/* 按钮特定图标 */
 #prevBtn { background-image: url('./icon/b_0.svg'); }
-#prevBtn:hover { background-image: url('./icon/b_1.svg'); }
-
 #nextBtn { background-image: url('./icon/f_0.svg'); }
-#nextBtn:hover { background-image: url('./icon/f_1.svg'); }
 
-/* 状态 1 & 2：横向布局时的间距 */
-@media (max-height: 400px) {
-    .nav-buttons {
-        display: flex;
-        gap: 35px; /* 增加横向模式下的按钮间距 */
-        margin-left: 10px;
-    }
+/* --- 响应式断点优化 --- */
+
+/* 1. 极窄模式 (Notion 侧边栏/多列布局) */
+@media (max-height: 180px) {
+    .card { border-radius: 12px; padding: 10px 20px; gap: 15px; }
+    .cover { width: 70px; height: 70px; border-radius: 8px; }
+    .title { font-size: 19px; }
+    .artist, .nav-buttons { display: none; }
+    audio { height: 30px; }
 }
 
-/* 状态 3：全屏模式下的布局 */
+/* 2. 横向中等模式 */
+@media (min-height: 181px) and (max-height: 400px) {
+    .card { flex-direction: row; padding: 20px 35px; border-radius: 20px; }
+    .cover { width: 180px; height: 180px; }
+    .title { font-size: 24px; }
+    .nav-buttons { gap: 30px; }
+}
+
+/* 3. 纵向全屏模式 (Notion 大页面嵌入) */
 @media (min-height: 401px) {
+    .card { 
+        flex-direction: column; 
+        text-align: center; 
+        padding: 40px 30px; 
+    }
+    .cover { 
+        width: 280px; 
+        height: 280px; 
+        margin-bottom: 25px; 
+    }
+    .info { 
+        align-items: center; 
+        width: 100%; 
+    }
     .nav-buttons {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* 显著增加全屏模式下的间距，营造呼吸感 */
         gap: 60px; 
-        margin-top: 30px;
+        margin-top: 25px;
     }
 }
