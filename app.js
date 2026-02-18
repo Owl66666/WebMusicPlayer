@@ -55,7 +55,7 @@ function loadSong(index, shouldPlay = true) {
 
         // 背景颜色处理
         if (song.theme_color) {
-            const finalBg = `linear-gradient(135deg, ${song.theme_color}bb 0%, #121212 100%)`;
+            const finalBg = `linear-gradient(135deg, ${song.theme_color}bb 0%, #191919 100%)`;
             card.style.background = finalBg;
             // 打印最终应用的背景样式
             console.log(`最终背景样式: ${finalBg}`);
