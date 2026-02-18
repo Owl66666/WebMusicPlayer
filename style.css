@@ -6,7 +6,8 @@ html, body {
     width: 100%;
     overflow: hidden; 
     /* 核心：匹配 Notion 背景色，防止圆角边缘出现色差 */
-    background-color: #191919; 
+    /* background-color: #191919;  */
+    background: transparent !important;
     font-family: 'Inter', -apple-system, system-ui, sans-serif;
 }
 
