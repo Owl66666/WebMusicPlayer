@@ -4,37 +4,32 @@ html, body {
     padding: 0; 
     height: 100vh; 
     width: 100%;
-    overflow: hidden; 
-    /* 核心：匹配 Notion 背景色，防止圆角边缘出现色差 */
-    background-color: #191919; 
-    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    /* 核心：将最外层设为完全透明 */
+    background: transparent !important; 
+    overflow: hidden;
 }
 
 .card {
+    /* 核心 1：宽度和高度不要填满 100%，给圆角留出渲染余地 */
+    /* 或者保持 100%，但必须确保 background 声明在 card 这一层 */
     width: 100%; 
-    height: 100vh;
+    height: 100%;
+    
     display: flex; 
     align-items: center; 
     justify-content: center;
     box-sizing: border-box; 
-    padding: 24px; 
-    gap: 40px;
     
-    /* --- 核心圆角设计 --- */
+    /* 核心 2：圆角和背景必须在这里定义 */
     border-radius: 28px; 
-    overflow: hidden;
+    background: linear-gradient(135deg, #282828 0%, #121212 100%);
     
-    /* 极细微的边框，模拟玻璃质感 */
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* 核心 3：裁剪四角。没有这一行，背景色会溢出圆角变成直角 */
+    overflow: hidden; 
     
-    /* 初始渐变：终点颜色设为 Notion 的 #191919 以实现无缝融合 */
-    background: linear-gradient(135deg, #282828 0%, #191919 100%);
-    
-    /* 丝滑的颜色切换动画 */
-    transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* 阴影设计：让组件在 Notion 页面上有浮起感 */
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    /* 核心 4：边框和投影也要在这一层 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 1.2s ease;
 }
 
 .cover {
